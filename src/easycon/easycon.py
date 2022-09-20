@@ -22,13 +22,20 @@ class EasyCon:
         self._timeout = 5
         self._session = session
         self._xml_data_root = None
+        self._aI105_series = None
+        self._aI110_id = None
 
         log.debug('init')
 
         self._auth = BasicAuth(user, password)
 
-    def set_data(self, xml_data):
+        # http://192.168.158.203/http/easycon/hpType.csv
+
+    def set_data(self, xml_data, id_series):
+        """Set data"""
         self._xml_data_root = xml_data
+        self._aI105_series = id_series['aI105_series']
+        self._aI110_id = id_series['aI110_id']
     # def __init__(self, xml_data_root):
     #     self._xml_data_root = xml_data_root
 
@@ -41,28 +48,33 @@ class EasyCon:
         # await self._async_get_data()
 
         firmware_raw = self.get_integer_value(1)
-
         major = math.floor(firmware_raw / 1e4)
         minor = math.floor((firmware_raw - 1e4 * major) / 100)
         patch = math.floor(firmware_raw - 1e4 * major - 100 * minor)
+        firmware = f"{major:02}.{minor:02}.{patch:02}"
+
+        series = self._aI105_series[self.get_integer_value(105)]
+        id = self._aI110_id[self.get_integer_value(110)]
         # i_build = +integers[2],
         # i_build > 415 && integers[3] < 643 && (i_minor -= 1, i_patch += 100),
 
         return {
-            'firmware': f"{major:02}.{minor:02}.{patch:02}"
+            'firmware': firmware,   # I1
+            'series': series,       # I105
+            'id': id,               # I110
         }
         # log.info(f"bios bersion: {bios_version=}")
 
         # log.info(f"series: {self.get_integer_value(105)}")
 
     def get_digital_value(self, index: int) -> bool:
-        xpath = f".//PCOWEB/PCO/DIGITAL/VARIABLE[INDEX='{index}')]/VALUE"
+        xpath = f".//DIGITAL/VARIABLE[INDEX='{index}')]/VALUE"
         data = self._xml_data_root.findall(xpath)
         log.trace(f"{data=}")
         return data[0]
 
     def get_analog_value(self, index: int) -> float:
-        xpath = f".//PCOWEB/PCO/ANALOG/VARIABLE[INDEX='{index}')]/VALUE"
+        xpath = f".//ANALOG/VARIABLE[INDEX='{index}')]/VALUE"
         return 0.0
 
     def get_integer_value(self, index: int) -> int:
