@@ -67,6 +67,19 @@ class EasyCon:
 
         # log.info(f"series: {self.get_integer_value(105)}")
 
+    def get_energy_balance(self):
+        """adf"""
+        return {
+            'A25': {
+                'value': self.get_analog_value(25),
+                'unit': 'kW',
+                'description': 'Electrical power'
+            },
+            'A26': self.get_analog_value(26),
+            'A27': self.get_analog_value(27),
+            'A28': self.get_analog_value(28),
+        }
+
     def get_digital_value(self, index: int) -> bool:
         xpath = f".//DIGITAL/VARIABLE[INDEX='{index}')]/VALUE"
         data = self._xml_data_root.findall(xpath)
