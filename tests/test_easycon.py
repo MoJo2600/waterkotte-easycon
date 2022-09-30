@@ -2,43 +2,40 @@
 import os
 import sys
 import csv
-# sys.path.insert(0 , os.path.abspath('src'))
+sys.path.insert(0 , os.path.abspath('src'))
 
 import pytest
 import xml.etree.ElementTree as ET
-from easycon import EasyCon
+from waterkotte_easycon import EasyCon
+
 
 @pytest.fixture
-def xml_content():
+def xml_data_file():
     """Get sample XML"""
-    tree = ET.parse(f"{os.path.dirname(os.path.abspath(__file__))}/fixtures/testdata.xml")
-    root = tree.getroot()
-    return root
+    return f"{os.path.dirname(os.path.abspath(__file__))}/fixtures/testdata.xml"
 
-@pytest.fixture
-def id_series():
-    """Get device types"""
-    
-    aI110_id = []
-    aI105_series = []
-    with open(f"{os.path.dirname(os.path.abspath(__file__))}/fixtures/hpTypes.csv", mode ='r')as file:
-        csvFile = csv.reader(file, delimiter=';')
-        for lines in csvFile:
-            aI105_series.append(lines[2])
-            aI110_id.append(lines[1])
-    return {
-        'aI105_series': aI105_series,
-        'aI110_id': aI110_id^^
-    }
+# @pytest.fixture
+# def hp_types_file():
+#     """Get device types"""
+#     return f"{os.path.dirname(os.path.abspath(__file__))}/fixtures/hpTypes.csv"
 
 
-@pytest.mark.asyncio
-def test_read_basic_info(xml_content, id_series):
-    """Test basic info"""
+def test_read_xml(xml_data_file):
     easycon = EasyCon('foo')
-    easycon.set_data(xml_content, id_series)
+    easycon.parse_xml_data(xml_data_file)
 
-    basic_info = easycon.async_get_basic_information()
-    print(f"{basic_info=}")
 
-    assert basic_info['firmware'] == '01.08.96'
+# @pytest.mark.asyncio
+# def test_read_basic_info(xml_content, hp_types_file, xml_data_file):
+#     """Test basic info"""
+#     easycon = EasyCon('foo',
+#                       hp_types_file=hp_types_file,
+#                       xml_data_file=xml_data_file)
+
+#     # easycon.load_data() # would download data
+#     # easycon.set_data(xml_content, id_series)
+
+#     basic_info = easycon.async_get_basic_information()
+#     print(f"{basic_info=}")
+
+#     assert basic_info['firmware'] == '01.08.96'

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "waterkotte-easycon"
-version = "1.0.0"
+version = "1.0.1"
 description = "Wrapper to communicate with Waterkotte heatpumps running EasyCon"
 readme = "README.md"
 authors = [{ name = "Christian Erhardt", email = "christian.erhardt@mojo2k.de" }]
@@ -14,8 +14,8 @@ classifiers = [
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
 ]
-keywords = ["easycon"]
-dependencies = ['tomli; python_version < "3.11"']
+keywords = ["waterkotte", "easycon"]
+dependencies = ['aiohttp', 'asyncio']
 requires-python = ">=3.7"
 
     [project.optional-dependencies]
@@ -31,7 +31,7 @@ requires-python = ">=3.7"
 
 
 [tool.bumpver]
-current_version = "1.0.0"
+current_version = "1.0.1"
 version_pattern = "MAJOR.MINOR.PATCH"
 commit_message  = "bump version {old_version} -> {new_version}"
 commit          = true
