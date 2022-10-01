@@ -21,8 +21,16 @@ def xml_data_file():
 
 
 def test_read_xml(xml_data_file):
+    # arrange
     easycon = EasyCon('foo')
-    easycon.parse_xml_data(xml_data_file)
+
+    # act
+    easycon._parse_xml_data(xml_data_file)
+
+    # assert
+    assert easycon._data['values']['I1']['value'] == '01.08.96'
+    assert easycon._data['values']['I1']['description'] == 'Firmware'
+
 
 
 # @pytest.mark.asyncio
